@@ -13,6 +13,7 @@ int getP()
     cout << "Enter number P from 0 to 10 that you want to find: " << endl;
     cin >> p;
 
+    //limiting numbers to a specific range, in this instance to range from 0 to 10 for easier testing
     if (p > 10 || p < 0)
     {
         cout << "P is out of range" << endl;
@@ -24,7 +25,7 @@ int getP()
 int main()
 {
    {
-       //Задано послідовність значень А[n] і деяке значення P. Знайти індекс першого входження Р у послідовність А[n].
+       //Given array A[n] and variable P find index of first appearance of P in array.
  
        cout << "Task 1" << endl;
  
@@ -32,7 +33,7 @@ int main()
  
        cout << "Enter number of iterations: " << endl;
        cin >> n;
-       //limiting numbers from 0 to 10 for easier use
+
        int p = getP();
  
        int* arr = new int[n];
@@ -69,7 +70,7 @@ int main()
    }
    
    {
-       //Задано послідовність значень А[n]. Знайти найменше значення серед додатних елементів послідовності А[n].
+       //Given array A[n] find lowest positive number in it.
  
        cout << "Task 2" << endl;
        
@@ -118,7 +119,7 @@ int main()
    }
 
     {
-        //Задано послідовність значень А[n]. Знайти найбільше і найменше значення та поміняти їх місцями.
+        //Given array A[n] find lowest and biggest number and switch places between them.
         cout << "Task 3" << endl;
 
         initRandomizer();

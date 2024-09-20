@@ -23,7 +23,7 @@ int main()
     }
 
     {
-        //Опису змінних типів int, float, unsigned short.
+        //Desc of vars: int, float, unsigned short
 
         int nA;
 
@@ -31,7 +31,7 @@ int main()
 
         unsigned short wC;
 
-        //Ініціювання змінних, що описанні в п.1 даного завдання
+        //Init of above vars
 
         nA = 381;
 
@@ -39,7 +39,7 @@ int main()
 
         wC = 6429;
 
-        //Опису змінних типів double, int, char.
+        //Desc of vars double int char.
 
         double dblD;
 
@@ -47,8 +47,8 @@ int main()
 
         char chF;
 
-        //Ініціювання змінних 
-        // за допомогою неявного приведення типів
+        //Init of vars
+        // using coercion
 
         dblD = nA;
 
@@ -56,7 +56,7 @@ int main()
 
         chF = wC;
 
-        //за допомогою явного приведення
+        //using casting
 
         dblD = (double)nA;
 
@@ -64,7 +64,7 @@ int main()
 
         chF = (char)wC;
 
-        //з обходом суворої типізації
+        //bypassing strong typisation
 
         double* pdblD;
 

@@ -4,7 +4,7 @@ using namespace std;
 int main()
 {
     {
-        // Задано ціле значення А. Визначити, яких бітів (0 чи 1) більше в його двійковому поданні.
+        // Given integer A determine if it has more 0 or 1 in binary.
         
         cout << "Task 1" << endl;
 
@@ -52,8 +52,8 @@ int main()
     {
         /* Task 2 Make specification for XOR operation
         since Xor is already in programming language we don't need to reinvent it, but if we needed to code it ourself 
-        we basically need 3 arrays, A and B for input and C for output, then check in loop if A[n]=B[n] and give C[n] a value 0 or 1 using Xor standart rules.
-        Since i'm too lazy to write dex to bin convenventer i'll just hope that noone forces me to do this xd
+        we basically need 3 arrays, A and B for input and C for output, then check in loop if A[n]=B[n] and if they are either 1 or 0
+        and give C[n] a value 0 or 1 using Xor standart rules
         */
     }
 }
