@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # ignore some vs things
 *.sln
 *.vcxproj
+*vcxproj.*
