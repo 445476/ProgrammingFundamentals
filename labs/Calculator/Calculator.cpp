@@ -1,6 +1,6 @@
 // Calculator Illia Kozlovets 123
-/*You are tasked with creating a simple calculator that evaluates mathematical expressions in infix notation using a stack. 
-The calculator should support basic arithmetic operations: addition, subtraction, multiplication, and division. 
+/*You are tasked with creating a simple calculator that evaluates mathematical expressions in infix notation using a stack.
+The calculator should support basic arithmetic operations: addition, subtraction, multiplication, and division.
 The program should correctly handle operator precedence.
 */
 #include <iostream>
@@ -23,29 +23,33 @@ int precedence(char c)
 }
 
 
-string infixToPostfix(const string& expression)
+string infixToPostfix(const string& inFix)
 {
+
+	string expression = inFix;
 	string postfix;
 	stack <char> operators;
 
+	expression.erase(std::remove_if(expression.begin(), expression.end(), ::isspace), expression.end());
+
 	for (int i = 0; i < expression.length(); i++)
 	{
-		
+
 		if (isspace(expression[i]))
 		{
-			continue; 
+			continue;
 		}
 		else if (isdigit(expression[i]))
 		{
 			postfix += expression[i];
-			
-			if (expression[i+1] == '+' || expression[i+1] == '-' || expression[i+1] == '/' || expression[i+1] == '*')
+
+			if (expression[i + 1] == '+' || expression[i + 1] == '-' || expression[i + 1] == '/' || expression[i + 1] == '*')
 			{
 				postfix += ' '; //adding space for differentiation between digits later
 			}
 		}
 		else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '/' || expression[i] == '*')
-		{			
+		{
 			while (!operators.empty() && precedence(operators.top()) >= precedence(expression[i]))
 			{
 				postfix += ' '; //adding space for differentiation between digits later
@@ -61,7 +65,7 @@ string infixToPostfix(const string& expression)
 		}
 	}
 
-	while (!operators.empty()) 
+	while (!operators.empty())
 	{
 		postfix += ' '; //you know the drill
 		postfix += operators.top();
@@ -71,7 +75,7 @@ string infixToPostfix(const string& expression)
 }
 
 
-int performOperation(char operation, int operand1, int operand2) 
+int performOperation(char operation, int operand1, int operand2)
 {
 	switch (operation)
 	{
@@ -80,13 +84,13 @@ int performOperation(char operation, int operand1, int operand2)
 	case '-':
 		return operand1 - operand2;
 	case '/':
-		
+
 		if (operand2 == 0)
 		{
 			cout << "Division by 0!";
 			exit(0);
 		}
-		
+
 		return operand1 / operand2;
 	case '*':
 		return operand1 * operand2;
@@ -94,7 +98,7 @@ int performOperation(char operation, int operand1, int operand2)
 }
 
 
-int evaluatePostfix(const string& expression)  
+int evaluatePostfix(const string& expression)
 {
 	stack <int> operands;
 	string dig;
@@ -114,7 +118,7 @@ int evaluatePostfix(const string& expression)
 			dig.clear();
 		}
 		else if (c == '+' || c == '-' || c == '/' || c == '*')
-		{			
+		{
 			a = operands.top();
 			operands.pop();
 			b = operands.top();
@@ -129,8 +133,7 @@ int evaluatePostfix(const string& expression)
 int main()
 {
 	string expression;
-	cin >> expression;
-	expression += " ";
-	cout << evaluatePostfix(expression);	
+	getline(cin, expression);
+	cout << infixToPostfix(expression) << endl;
+	cout << evaluatePostfix(expression);
 }
-
