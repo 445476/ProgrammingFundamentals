@@ -58,10 +58,6 @@ bool scanLine(const string& line)
 
 int main()
 {
-    int i = 1;
-    while (i == 1)
-    {
         cout << scanLine(inputLine()) << endl;
-    }
 }
 
