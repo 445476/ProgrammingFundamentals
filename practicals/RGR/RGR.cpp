@@ -58,6 +58,6 @@ bool scanLine(const string& line)
 
 int main()
 {
-        cout << scanLine(inputLine()) << endl;
+    cout << scanLine(inputLine()) << endl;
 }
 
