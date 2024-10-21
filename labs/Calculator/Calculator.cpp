@@ -7,6 +7,7 @@ The program should correctly handle operator precedence.
 #include <stack>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 using namespace std;
 
 //Determines the precedence of the operators (+, -, *, /).

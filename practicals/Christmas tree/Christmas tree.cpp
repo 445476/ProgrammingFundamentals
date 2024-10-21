@@ -20,8 +20,8 @@ Clearing console printf("\033[H\033[J");
 // when i finished this project i got the gist of what i should have done, but i don`t have time to rewrite the project now, maybe i`ll revise it later
 
 #include <iostream>
-#include <windows.h>
 #include <ctime>
+#include <unistd.h>
 using namespace std;
 
 const int STEP = 2;
@@ -167,9 +167,9 @@ void anim(int** arr, int& levels)
     {
         coutTree(arr, levels);
 
-        Sleep(1000);
+        sleep(1);
 
-        system("cls");
+        system("clear");
     }
 }
 
@@ -181,7 +181,7 @@ int main()
     int levels;
     cin >> levels;
 
-    system("cls");
+    system("clear");
     
     //this array is the reason why it`s not so easy to rewrite, basically the tree is just one block that repeats to certain point then it repeats again
     // i could`ve just make one big array...
