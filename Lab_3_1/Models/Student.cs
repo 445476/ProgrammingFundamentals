@@ -14,8 +14,6 @@ namespace Models
         public double GradeAvg { get; private set; }   
         public string IdCode { get; private set; }     
 
-        public Student() { }
-
         public Student(string firstName, string lastName, int course, string studentId, Gender gender, double gradeAvg, string idCode)
         : base(firstName, lastName, gender) 
         {
@@ -37,12 +35,12 @@ namespace Models
             IdCode = idCode;
         }
 
-        public void Study()
+        public override void Study()
         {
             if (Course < 6) Course++;
         }
 
-        public void Cook()
+        public override void Cook()
         {
             //for testing purposes lets assume that cooking changes gender if you are a student
             if (Gender == Gender.Male)

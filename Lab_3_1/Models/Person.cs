@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -12,8 +13,6 @@ namespace Models
             public string LastName { get; set; }
 
             public Gender Gender { get; set; }
-
-            protected Person() { }
 
             protected Person(string firstName, string lastName, Gender gender)
             {
@@ -39,8 +38,8 @@ namespace Models
                 
             }
 
-            public void Cook() { }
-            public void Study() { }
+            virtual public void Cook() { }
+            virtual public void Study() { }
 
             //base method for universal reading of objects
             public virtual string ToPersistenceString()
