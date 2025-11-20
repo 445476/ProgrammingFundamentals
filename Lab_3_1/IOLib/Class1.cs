@@ -8,12 +8,10 @@ using Models;
 namespace IOLib
 
 {
-    public class FileRepository : IRepository<Person> // Використовуємо IRepository<Person> для роботи з усіма Person
+    public class FileRepository : IRepository<Person>
         {
-        // === МЕТОД SAVE (OCP: Не знає про поля Student чи Dentist) ===
         public void Save(Person[] persons, string path)
         {
-            // Використовуємо потоки для роботи з файлами (вимога 1)
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var sw = new StreamWriter(fs, Encoding.UTF8))
             {
@@ -21,13 +19,11 @@ namespace IOLib
                 {
                     if (p == null) continue;
 
-                    // 1. Заголовок (ТипНазва)
                     string header = $"{p.GetType().Name} {SanitizeName(p.FirstName + p.LastName)}";
 
                     sw.WriteLine(header);
                     sw.WriteLine("{");
 
-                    // 2. Серіалізація: Поліморфний виклик (OCP)
                     sw.Write(p.ToPersistenceString());
 
                     sw.WriteLine("};");
@@ -35,14 +31,11 @@ namespace IOLib
             }
         }
 
-        // === МЕТОД LOAD (Залишається складним через factory-логіку) ===
         public Person[] Load(string path)
         {
             if (!File.Exists(path)) return new Person[0];
 
             var lines = File.ReadAllLines(path, Encoding.UTF8);
-
-            // Використання масиву для результату (вимога: не використовувати колекції)
             Person[] result = new Person[0];
 
             for (int i = 0; i < lines.Length; i++)
@@ -50,83 +43,87 @@ namespace IOLib
                 var line = lines[i].Trim();
                 if (string.IsNullOrEmpty(line) || line == "{") continue;
 
-                // 1. Читання заголовка ("Student VasiaPupkin")
+                // read header
                 var headerMatch = Regex.Match(line, @"^(?<type>\w+)\s+(?<name>\w+)$");
                 if (!headerMatch.Success) continue;
                 string type = headerMatch.Groups["type"].Value;
 
-                // 2. Читання блоку атрибутів до "};"
-                i++; // Переходимо на рядок після "{"
-                var attrLines = new List<string>(); // *Тимчасова* колекція для парсингу блоку
+                // building stringbuilder
+                i++; 
+                var blockBuilder = new StringBuilder(); 
+                
                 while (i < lines.Length && !lines[i].Trim().EndsWith("};"))
                 {
-                    attrLines.Add(lines[i].Trim());
+                    blockBuilder.Append(lines[i].Trim());
                     i++;
                 }
                 if (i < lines.Length && lines[i].Trim().EndsWith("};"))
                 {
-                    var last = lines[i].Trim();
-                    var before = last.Substring(0, last.Length - 2).Trim();
-                    if (!string.IsNullOrEmpty(before)) attrLines.Add(before);
+                    blockBuilder.Append(lines[i].Trim().Replace("};", "").Trim());
                 }
 
-                // 3. Парсинг атрибутів у словник (для зручного доступу)
-                var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var l in attrLines)
+                string attributeBlock = blockBuilder.ToString().Replace(",", "");
+
+                // parsing of attributes
+                string pattern = @"""(?<k>[^""]+)""\s*:\s*""(?<v>[^""]+)""";
+                var matches = Regex.Matches(attributeBlock, pattern);
+
+                // local atributes
+                string fn = null, ln = null, courseS = null, studentId = null, genderS = null;
+                string gradeAvgS = null, idCode = null, spec = null, lic = null, ptS = null;
+
+                foreach (Match m in matches)
                 {
-                    // Regex для формату "key": "value", або "key": "value"
-                    var m = Regex.Match(l, @"^\s*""(?<k>[^""]+)""\s*:\s*""(?<v>[^""]+)""\s*,?\s*$");
-                    if (m.Success) dict[m.Groups["k"].Value] = m.Groups["v"].Value;
+                    string key = m.Groups["k"].Value.Trim().Replace("\"", "").Replace(",", "");
+                    string value = m.Groups["v"].Value.Trim();
+
+                    switch (key.ToLower())
+                    {
+                        case "firstname": fn = value; break;
+                        case "lastname": ln = value; break;
+                        case "course": courseS = value; break;
+                        case "studentid": studentId = value; break;
+                        case "gender": genderS = value; break;
+                        case "gradeavg": gradeAvgS = value; break;
+                        case "idcode": idCode = value; break;
+                        case "speciality": spec = value; break;
+                        case "licensenumber": lic = value; break;
+                        case "patientstreated": ptS = value; break;
+                    }
                 }
-
-                // 4. Створення об'єкта (Factory logic)
+                
+                // crating obj
                 Person newPerson = null;
-
-                // Всі об'єкти вимагають fn, ln, які ми отримуємо зі словника
-                dict.TryGetValue("firstname", out string fn);
-                dict.TryGetValue("lastname", out string ln);
-                dict.TryGetValue("gender", out string gender);
-                Gender gn = Gender.Male;
-                Enum.TryParse<Gender>(gender, true, out gn);
-
+                Enum.TryParse<Gender>(genderS, out Gender gender);
+                
                 try
                 {
                     if (string.Equals(type, "Student", StringComparison.OrdinalIgnoreCase))
                     {
-                        // ... парсинг усіх полів ...
-                        dict.TryGetValue("course", out string courseS);
-                        dict.TryGetValue("studentId", out string studentId);
-                        dict.TryGetValue("gradeAvg", out string gradeAvgS);
-                        dict.TryGetValue("idCode", out string idCode);
-
                         if (int.TryParse(courseS, out int course) &&
-                            double.TryParse(gradeAvgS, out double gradeAvg)) 
-                        {
-                            newPerson = new Student(fn, ln, course, studentId, gn, gradeAvg, idCode);
+                            double.TryParse(gradeAvgS, out double gradeAvg))
+                            {
+                             newPerson = new Student(fn, ln, course, studentId, gender, gradeAvg, idCode);
                         }
                     }
                     else if (string.Equals(type, "Storyteller", StringComparison.OrdinalIgnoreCase))
                     {
-                        dict.TryGetValue("speciality", out string spec);
-                        newPerson = new Storyteller(fn, ln, spec, gn);
+                        newPerson = new Storyteller(fn, ln, spec, gender);
                     }
                     else if (string.Equals(type, "Dentist", StringComparison.OrdinalIgnoreCase))
                     {
-                        dict.TryGetValue("patientsTreated", out string ptS);
                         if (int.TryParse(ptS, out int pt))
-                            newPerson = new Dentist(fn, ln, int.Parse(ptS), gn);
+                             newPerson = new Dentist(fn, ln, int.Parse(ptS), gender);
                     }
                 }
                 catch (ArgumentException ex)
                 {
-                    // Обробка помилок валідації при створенні об'єкта (некоректні дані у файлі)
                     Console.WriteLine($"Error loading {type}: {ex.Message}. Record skipped.");
                 }
 
 
                 if (newPerson != null)
-                {
-                    // Допоміжний метод Append<T> для розширення масиву
+                {                    
                     result = Append(result, newPerson);
                 }
             }
@@ -134,8 +131,8 @@ namespace IOLib
             return result;
         }
 
-        // Helper: append to array (no collections)
-        private static Person[] Append(Person[] arr, Person item)
+        // append to array 
+        private Person[] Append(Person[] arr, Person item)
         {
             var newArr = new Person[arr.Length + 1];
             for (int i = 0; i < arr.Length; i++) newArr[i] = arr[i];
@@ -143,7 +140,29 @@ namespace IOLib
             return newArr;
         }
 
-        private static string SanitizeName(string s)
+        //Remove
+        public Person[] RemoveAt(Person[] arr, int indexToRemove)
+        {
+            if (indexToRemove < 0 || indexToRemove >= arr.Length)
+            {
+                return arr; 
+            }
+
+            var newArr = new Person[arr.Length - 1];
+            int newIndex = 0;
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (i != indexToRemove)
+                {
+                    newArr[newIndex] = arr[i];
+                    newIndex++;
+                }
+            }
+            return newArr;
+        }
+
+        private string SanitizeName(string s)
         {
             if (string.IsNullOrEmpty(s)) return "Obj";
             return Regex.Replace(s, @"\s+", "");

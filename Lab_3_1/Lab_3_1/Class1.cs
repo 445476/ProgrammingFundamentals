@@ -42,6 +42,8 @@ namespace Lab_3_1
                             case 6: SearchByLastName(); break;
                             case 7: SearchByIdentifier(); break;
                             case 8: CountExcellentFemales5Course(); break; // Завдання варіанту
+                            case 9: RemovePerson(); break;
+                            case 10: PerformAction(); break;
                             case 0: running = false; break;
                             default: Console.WriteLine("Невірний вибір. Спробуйте ще раз."); break;
                         }
@@ -80,8 +82,6 @@ namespace Lab_3_1
             Console.Write("\nВаш вибір: ");
         }
 
-        // --- ОПЕРАЦІЇ I/O ТА CRUD (Через IRepository) ---
-
         private void LoadData()
         {
             _data = _repository.Load(FilePath);
@@ -115,16 +115,16 @@ namespace Lab_3_1
             try
             {
                 // Студенти
-                var s1 = new Student("Марія", "Коваленко", 5, "KB500123", Gender.Female, 5.0, "2000111101");
-                var s2 = new Student("Іван", "Петров", 4, "KZ412345", Gender.Male, 4.1, "1999123456");
-                var s3 = new Student("Ольга", "Мельник", 5, "AD500999", Gender.Female, 4.9, "2001000000"); // Відмінниця 5 курсу
-                var s4 = new Student("Катерина", "Сидоренко", 3, "ER333444", Gender.Female, 4.5, "1998010101");
+                var s1 = new Student("Mariya", "K", 5, "KB123123", Gender.Female, 5, "2000111101");
+                var s2 = new Student("A", "B", 4, "KZ412345", Gender.Male, 4, "1999123456");
+                var s3 = new Student("B", "A", 5, "AD500999", Gender.Female, 4, "2001000000"); // Відмінниця 5 курсу
+                var s4 = new Student("S", "D", 3, "ER333444", Gender.Female, 4, "1998010101");
 
                 // Дантист
-                var d1 = new Dentist("Олег", "Демченко", 150, Gender.Male);
+                var d1 = new Dentist("B", "V", 150, Gender.Male);
 
                 // Сторітеллер
-                var st1 = new Storyteller("Олена", "Ткач", "Megamaster3000", Gender.Female);
+                var st1 = new Storyteller("S", "D", "Megamaster3000", Gender.Female);
 
                 // Об'єднання в масив
                 _data = new Person[] { s1, s2, s3, s4, d1, st1 };
@@ -197,8 +197,92 @@ namespace Lab_3_1
                 .ToArray();
 
             DisplaySearchResults(results, $"за ідентифікатором '{searchId}'");
+
+
+        }
+        private void RemovePerson()
+        {
+            Console.Write("Введіть ідентифікатор (StudentId, IdCode або LicenseNumber) для видалення: ");
+            string searchId = Console.ReadLine().Trim();
+
+            if (string.IsNullOrEmpty(searchId)) return;
+
+            // 1. Пошук індексу запису
+            int indexToRemove = -1;
+            for (int i = 0; i < _data.Length; i++)
+            {
+                var p = _data[i];
+
+                // Логіка пошуку ідентифікатора (така ж, як у SearchByIdentifier)
+                bool found = false;
+                if (p is Student s && (s.StudentId.Equals(searchId) || s.IdCode.Equals(searchId)))
+                {
+                    found = true;
+                }
+                // Додайте тут логіку для Storyteller, якщо він має унікальний ID
+
+                if (found)
+                {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+
+            if (indexToRemove == -1)
+            {
+                Console.WriteLine($"Запис з ідентифікатором '{searchId}' не знайдено.");
+                return;
+            }
+
+            // 2. Підтвердження видалення
+            Console.WriteLine($"Знайдено запис для видалення: {_data[indexToRemove]}");
+            Console.Write("Ви впевнені, що хочете видалити цей запис? (y/n): ");
+
+            if (Console.ReadLine().Trim().ToLower() == "y")
+            {
+                // 3. Видалення та оновлення основного масиву
+                // Важливо: Оскільки метод RemoveAt належить IRepository, 
+                // нам потрібно викликати його через _repository. 
+                // Якщо ви додали RemoveAt як приватний метод у FileRepository, 
+                // вам потрібно буде зробити його публічним у FileRepository та додати до IRepository.
+
+                // ПРИПУСКАЄМО, що ви зробили метод RemoveAt ПУБЛІЧНИМ у FileRepository 
+                // (хоча це порушує IoC, це найпростіший шлях для лабораторної роботи).
+
+                // ***************
+                // !!! АЛЬТЕРНАТИВА (краща для архітектури) !!!
+                // Перемістити логіку видалення (RemoveAt) в ConsoleMenu:
+                // ***************
+
+                _data = RemoveAtHelper(_data, indexToRemove); // Викликаємо локальний допоміжний метод
+                Console.WriteLine("Запис успішно видалено з пам'яті.");
+                Console.WriteLine("Не забудьте зберегти дані у файл (пункт 2).");
+            }
+            else
+            {
+                Console.WriteLine("Видалення скасовано.");
+            }
         }
 
+
+        // У ConsoleMenu.cs, додайте цей допоміжний метод (копію логіки видалення з FileRepository):
+        private Person[] RemoveAtHelper(Person[] arr, int indexToRemove)
+        {
+            if (indexToRemove < 0 || indexToRemove >= arr.Length) return arr;
+
+            var newArr = new Person[arr.Length - 1];
+            int newIndex = 0;
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (i != indexToRemove)
+                {
+                    newArr[newIndex] = arr[i];
+                    newIndex++;
+                }
+            }
+            return newArr;
+        }
         // --- ДОПОМІЖНІ МЕТОДИ ---
 
         private void DisplaySearchResults(Person[] results, string searchCriteria)
@@ -216,8 +300,92 @@ namespace Lab_3_1
             }
         }
 
-        // (Метод AddNewPerson є занадто довгим, щоб включати його повністю,
-        // але він має приймати ввід з консолі та викликати конструктори Student/Dentist/Storyteller)
+        private void PerformAction()
+        {
+            Console.Write("\n--- ВИКОНАННЯ ДІЇ ОБ'ЄКТА ---\n");
+            Console.Write("Введіть ідентифікатор запису (StudentId/LicenseNumber): ");
+            string searchId = Console.ReadLine().Trim();
+
+            if (string.IsNullOrEmpty(searchId)) return;
+
+            Person targetPerson = null;
+            foreach (var p in _data)
+            {
+                if (p is Student s && (s.StudentId.Equals(searchId) || s.IdCode.Equals(searchId)))
+                {
+                    targetPerson = s;
+                    break;
+                }
+            }
+
+            if (targetPerson == null)
+            {
+                Console.WriteLine($"Запис з ідентифікатором '{searchId}' не знайдено.");
+                return;
+            }
+
+            Console.WriteLine($"Знайдено: {targetPerson}");
+
+            // 2. Вибір дії на основі реалізованих інтерфейсів (IStudy, ICook, etc.)
+
+            int actionChoice = DisplayPersonActions(targetPerson);
+
+            if (actionChoice == 0) return;
+
+            // 3. Виклик відповідного методу та відображення результату
+            try
+            {
+                switch (actionChoice)
+                {
+                    case 1 when targetPerson is IStudy s:
+                        s.Study();
+                        break;
+
+                    case 2 when targetPerson is ICook c:
+                        c.Cook();
+                        break;
+
+                    case 3 when targetPerson is ITreat t:
+                        t.Treat();
+                        break;
+
+                    case 4 when targetPerson is ITell tell:
+                        tell.Tell();
+                        break;
+
+                    default:
+                        Console.WriteLine("Невірна дія або об'єкт не підтримує цю дію.");
+                        break;
+                }
+                Console.WriteLine($"Новий стан об'єкта: {targetPerson}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Помилка при виконанні дії: {ex.Message}");
+            }
+        }
+
+        // Допоміжний метод для відображення доступних дій
+        private int DisplayPersonActions(Person p)
+        {
+            Console.WriteLine("\n--- ДОСТУПНІ ДІЇ ---");
+
+            // Перевірка реалізації інтерфейсів
+            if (p is IStudy) Console.WriteLine("1: Study (Навчатися)");
+            if (p is ICook) Console.WriteLine("2: Cook (Готувати)");
+            if (p is ITreat) Console.WriteLine("3: Treat (Лікувати)");
+            if (p is ITell) Console.WriteLine("4: Tell (Розповідати)");
+
+            Console.WriteLine("0: Назад");
+            Console.Write("Ваш вибір дії: ");
+
+            if (int.TryParse(Console.ReadLine(), out int action))
+            {
+                return action;
+            }
+            return -1;
+        }
+
         private void AddNewPerson()
         {
             Console.WriteLine("\n--- Додати новий об'єкт ---");
