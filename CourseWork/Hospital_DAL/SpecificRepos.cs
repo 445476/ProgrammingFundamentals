@@ -64,7 +64,7 @@ namespace Hospital_DAL.SpecificRepos
         public ScheduleRepository() : base("schedules.json") { }
         public Schedule GetByDoctorId(Guid doctorId)
         {
-            return GetAll().FirstOrDefault(s => s.Id == doctorId);
+            return GetAll().FirstOrDefault(s => s.DoctorId == doctorId);
         }
     }
 }
