@@ -1,0 +1,23 @@
+[
+  {
+    "Id": "7fbfadf4-ef6a-44a4-9658-2b461a4833b3",
+    "DoctorId": "51255ad2-24d9-4b53-b024-3244dfb24cd7",
+    "Slots": [
+      {
+        "Id": "07e54761-ad9f-4891-8a9f-06b740782359",
+        "StartTime": "2025-12-01T10:00:00",
+        "EndTime": "2025-12-01T10:30:00",
+        "IsBooked": false,
+        "AppointmentId": null
+      },
+      {
+        "Id": "b9b7795c-67da-40f2-acf1-3b071d2001ee",
+        "StartTime": "2025-12-12T00:00:00",
+        "EndTime": "2025-12-12T00:30:00",
+        "IsBooked": false,
+        "AppointmentId": null
+      }
+    ],
+    "_doctorId": "51255ad2-24d9-4b53-b024-3244dfb24cd7"
+  }
+]

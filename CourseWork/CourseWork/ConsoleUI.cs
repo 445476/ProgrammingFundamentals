@@ -293,7 +293,7 @@ namespace Hospital_PL
 
             TimeSpan slotDuration = TimeSpan.FromMinutes(durationMinutes);
 
-            // Викликає логіку BLL, яка перевіряє перетин слотів
+            
             schedule.AddSlot(startDateTime, slotDuration);
             Console.WriteLine("Slot added to memory. Saving will happen next.");
         }
@@ -470,10 +470,10 @@ namespace Hospital_PL
 
             var newEntry = new Entry(Guid.NewGuid(), DateTime.Now, diagnosis, notes);
 
-            // BLL Model Logic
+          
             patient.MedicalCard.AddEntry(newEntry);
 
-            // DAL Save
+  
             _patientRepo.Update(patient);
 
             Console.WriteLine($"✅ New entry added to {patient.LastName}'s card.");
@@ -563,12 +563,12 @@ namespace Hospital_PL
 
         private void ShowDoctorAppointments()
         {
-            // Припускаємо, що ShowAllDoctors() доступний
+            
             ShowAllDoctors();
             Console.Write("Enter Doctor ID: ");
             if (!Guid.TryParse(Console.ReadLine(), out Guid doctorId)) return;
 
-            // CALL BLL MANAGER
+         
             var appointments = _appointmentManager.GetAppointmentsByDoctor(doctorId);
 
             Console.WriteLine($"\nAPPOINTMENTS FOR DOCTOR {doctorId}");
@@ -590,7 +590,7 @@ namespace Hospital_PL
             Console.Write("Enter Patient Last Name or First Name: ");
             string name = Console.ReadLine();
 
-            // CALL BLL MANAGER (Complex search logic)
+ 
             var appointments = _appointmentManager.GetAppointmentsByPatientName(name);
 
             Console.WriteLine($"\n--- SEARCH RESULTS FOR '{name}' ---");
@@ -598,7 +598,7 @@ namespace Hospital_PL
             {
                 foreach (var a in appointments.OrderBy(a => a.StartTime))
                 {
-                    // Отримання імені лікаря для відображення
+
                     var doctor = _doctorRepo.GetById(a.DoctorId);
                     string doctorName = doctor != null ? $"{doctor.LastName}, {doctor.FirstName}" : "Unknown Doctor";
 
@@ -611,9 +611,6 @@ namespace Hospital_PL
             }
         }
 
-        // ---------------------------------------------
-        // --- SEED DATA (for demonstration) ---
-        // ---------------------------------------------
 
         private void SeedData()
         {

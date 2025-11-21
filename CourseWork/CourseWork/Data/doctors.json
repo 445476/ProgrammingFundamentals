@@ -1,0 +1,12 @@
+[
+  {
+    "Specialization": "Cardiology",
+    "_specialization": "Cardiology",
+    "Id": "51255ad2-24d9-4b53-b024-3244dfb24cd7",
+    "FirstName": "John",
+    "LastName": "Smith",
+    "IsFemale": false,
+    "_firstName": "John",
+    "_lastName": "Smith"
+  }
+]
