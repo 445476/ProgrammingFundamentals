@@ -12,7 +12,6 @@ namespace Models
     {
         public int PatientsTreated { get; private set; }
 
-        public Dentist() { }
 
         public Dentist(string firstName, string lastName, int patientsTreated, Gender gender)
             : base(firstName, lastName, gender)

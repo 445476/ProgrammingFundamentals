@@ -14,8 +14,6 @@ namespace Models
         public double GradeAvg { get; private set; }   
         public string IdCode { get; private set; }     
 
-        public Student() { }
-
         public Student(string firstName, string lastName, int course, string studentId, Gender gender, double gradeAvg, string idCode)
         : base(firstName, lastName, gender) 
         {

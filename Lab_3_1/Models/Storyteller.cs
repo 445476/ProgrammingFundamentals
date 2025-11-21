@@ -11,21 +11,19 @@ namespace Models
     {
         public string Speciality { get; private set; }
 
-        public Storyteller() { }
-
         public Storyteller(string firstName, string lastName, string speciality, Gender gender)
             : base(firstName, lastName, gender)
         {
             Speciality = speciality.ToLower();
         }
 
-        public void Study()
+        public override void Study()
         {
             Speciality = "Storyteller";
             //relearns his speciality
         }
 
-        public void Cook()
+        public override void Cook()
         {
             //just cooks
         }
