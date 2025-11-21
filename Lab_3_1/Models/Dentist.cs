@@ -20,12 +20,12 @@ namespace Models
             PatientsTreated = patientsTreated;
         }
 
-        public void Study()
+        public override void Study()
         {
             // dentist upps his qualification
         }
 
-        public void Cook()
+        public override void Cook()
         {
             //lets assume dentist just cooks
         }

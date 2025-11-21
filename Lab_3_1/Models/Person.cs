@@ -39,8 +39,8 @@ namespace Models
                 
             }
 
-            public void Cook() { }
-            public void Study() { }
+            virtual public void Cook() { }
+            virtual public void Study() { }
 
             //base method for universal reading of objects
             public virtual string ToPersistenceString()

@@ -37,12 +37,12 @@ namespace Models
             IdCode = idCode;
         }
 
-        public void Study()
+        public override void Study()
         {
             if (Course < 6) Course++;
         }
 
-        public void Cook()
+        public override void Cook()
         {
             //for testing purposes lets assume that cooking changes gender if you are a student
             if (Gender == Gender.Male)
