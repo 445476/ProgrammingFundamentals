@@ -10,7 +10,7 @@ namespace Hospital_BLL.Models.Schedule
     public class Appointment
     {
         [JsonInclude] 
-        public Guid AppointmentId { get; private set; } = Guid.NewGuid();
+        public Guid Id { get; private set; } = Guid.NewGuid();
         [JsonInclude] 
         public Guid DoctorId { get; private set; }
         [JsonInclude] 

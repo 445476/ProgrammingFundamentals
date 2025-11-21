@@ -63,7 +63,7 @@ namespace Hospital_BLL.Models.Schedule
             }
 
             var newAppointment = new Appointment(doctorId, patientId, startTime, duration);
-            slotToBook.Book(newAppointment.AppointmentId);
+            slotToBook.Book(newAppointment.Id);
 
             _appointmentRepository.Add(newAppointment);
             _scheduleRepository.Update(doctorSchedule);
@@ -84,7 +84,7 @@ namespace Hospital_BLL.Models.Schedule
             if (doctorSchedule != null)
             {
                 ScheduleSlot bookedSlot = doctorSchedule.Slots.FirstOrDefault(s =>
-                    s.AppointmentId == appointmentToCancel.AppointmentId
+                    s.AppointmentId == appointmentToCancel.Id
                 );
 
                 if (bookedSlot != null)

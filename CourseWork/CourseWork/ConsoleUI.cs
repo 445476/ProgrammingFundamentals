@@ -19,12 +19,12 @@ namespace Hospital_PL
         public ConsoleUI(IDoctorRepository doctorRepo,
                          IPatientRepository patientRepo,
                          AppointmentManager appointmentManager,
-                         IScheduleRepository scheduleRepo) // <<< ОНОВЛЕНИЙ КОНСТРУКТОР
+                         IScheduleRepository scheduleRepo) 
         {
             _doctorRepo = doctorRepo;
             _patientRepo = patientRepo;
             _appointmentManager = appointmentManager;
-            _scheduleRepo = scheduleRepo; // <<< ІНІЦІАЛІЗАЦІЯ
+            _scheduleRepo = scheduleRepo;
             SeedData();
         }
 
@@ -68,9 +68,6 @@ namespace Hospital_PL
             }
         }
 
-        // ---------------------------------------------
-        // --- DOCTOR MENU (CRUD/SCHEDULE - FR 1) ---
-        // ---------------------------------------------
 
         private void HandleDoctorMenu()
         {
@@ -84,7 +81,7 @@ namespace Hospital_PL
                 Console.WriteLine("3. Edit Doctor (Name/Specialty)");
                 Console.WriteLine("4. Show Doctor Schedule");
                 Console.WriteLine("5. Edit Doctor Schedule (Add/Remove Slots)");
-                Console.WriteLine("6. Show All Doctors"); // <<< ДОДАНО
+                Console.WriteLine("6. Show All Doctors"); 
                 Console.WriteLine("0. Back");
                 Console.Write("Your choice: ");
 
@@ -98,7 +95,7 @@ namespace Hospital_PL
                         case "3": EditDoctor(); break;
                         case "4": ShowDoctorSchedule(); break;
                         case "5": EditDoctorSchedule(); break;
-                        case "6": ShowAllDoctors(); break; // <<< ВИКЛИК
+                        case "6": ShowAllDoctors(); break; 
                         case "0": back = true; break;
                         default: Console.WriteLine("Invalid choice."); break;
                     }
@@ -174,7 +171,7 @@ namespace Hospital_PL
             if (!string.IsNullOrWhiteSpace(newSpec)) doctor.Specialization = newSpec;
 
             _doctorRepo.Update(doctor);
-            Console.WriteLine($"✅ Doctor's card for {doctor.LastName} updated.");
+            Console.WriteLine($"Doctor's card for {doctor.LastName} updated.");
         }
 
         private void ShowDoctorSchedule()
@@ -183,7 +180,7 @@ namespace Hospital_PL
             Console.Write("Enter Doctor ID to view schedule: ");
             if (!Guid.TryParse(Console.ReadLine(), out Guid doctorId)) return;
 
-            var scheduleRepo = new ScheduleRepository(); // Temporary direct DAL creation for simplicity
+            var scheduleRepo = new ScheduleRepository();
             var schedule = scheduleRepo.GetByDoctorId(doctorId);
 
             Console.WriteLine($"\n--- SCHEDULE FOR DOCTOR {doctorId} ---");
@@ -203,7 +200,6 @@ namespace Hospital_PL
 
         private void EditDoctorSchedule()
         {
-            // 1. Ідентифікація лікаря
             ShowAllDoctors();
             Console.Write("Enter Doctor ID to edit schedule: ");
             if (!Guid.TryParse(Console.ReadLine(), out Guid doctorId))
@@ -212,15 +208,12 @@ namespace Hospital_PL
                 return;
             }
 
-            // Перевірка, чи лікар існує (хоча BLL зробить це знову, це покращує UI)
             if (_doctorRepo.GetById(doctorId) == null)
             {
                 Console.WriteLine("Doctor not found.");
                 return;
             }
 
-            // 2. Отримання або Створення розкладу
-            // Використовуємо IScheduleRepository, отриманий через DI
             var schedule = _scheduleRepo.GetByDoctorId(doctorId);
             bool isNewSchedule = (schedule == null);
 
@@ -257,8 +250,6 @@ namespace Hospital_PL
                     return;
                 }
 
-                // 3. ЗБЕРЕЖЕННЯ ЗМІН (DAL Operation)
-                // Вирішення, чи викликати Add (для нового розкладу) чи Update (для існуючого)
                 if (isNewSchedule)
                 {
                     _scheduleRepo.Add(schedule);
@@ -284,11 +275,6 @@ namespace Hospital_PL
             }
         }
 
-        // ----------------------------------------------------
-        // --- ДОПОМІЖНІ МЕТОДИ ДЛЯ РЕДАГУВАННЯ РОЗКЛАДУ ---
-        // ----------------------------------------------------
-
-        // Метод для додавання нових слотів
         private void AddSlotsToSchedule(Schedule schedule)
         {
             Console.Write("Enter Slot Start Date/Time (e.g., 2025-12-05 09:00:00): ");
@@ -312,7 +298,6 @@ namespace Hospital_PL
             Console.WriteLine("Slot added to memory. Saving will happen next.");
         }
 
-        // Метод для видалення слотів
         private void RemoveSlotFromSchedule(Schedule schedule)
         {
             if (!schedule.Slots.Any())
@@ -335,14 +320,10 @@ namespace Hospital_PL
                 return;
             }
 
-            // Викликає логіку BLL, яка перевіряє, чи не заброньовано слот
             schedule.RemoveSlot(slotId);
             Console.WriteLine("Slot removed from memory. Saving will happen next.");
         }
 
-        // ---------------------------------------------
-        // --- PATIENT MENU (CRUD/CARD - FR 2) ---
-        // ---------------------------------------------
 
         private void HandlePatientMenu()
         {
@@ -487,7 +468,6 @@ namespace Hospital_PL
             Console.Write("Enter Notes/Prescription: ");
             string notes = Console.ReadLine();
 
-            // NOTE: Ideally, the Appointment ID should be linked here, but we simplify.
             var newEntry = new Entry(Guid.NewGuid(), DateTime.Now, diagnosis, notes);
 
             // BLL Model Logic
@@ -526,15 +506,13 @@ namespace Hospital_PL
                         default: Console.WriteLine("Invalid choice."); break;
                     }
                 }
-                // Обробка винятків, згенерованих BLL (наприклад, "Слот вже заброньовано")
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine($"\n⚠️ INPUT ERROR: {ex.Message}");
+                    Console.WriteLine($"\nINPUT ERROR: {ex.Message}");
                 }
                 catch (InvalidOperationException ex)
                 {
-                    // Обробка BUSINESS LOGIC ERROR (наприклад, "Слот вже заброньовано")
-                    Console.WriteLine($"❌ BUSINESS LOGIC ERROR: {ex.Message}");
+                    Console.WriteLine($"BUSINESS LOGIC ERROR: {ex.Message}");
                 }
                 catch (Exception ex)
                 {
@@ -549,13 +527,8 @@ namespace Hospital_PL
             }
         }
 
-        // ---------------------------------------------
-        // --- ХЕЛПЕР МЕТОДИ APPOINTMENT MENU ---
-        // ---------------------------------------------
-
         private void CreateAppointment()
         {
-            // Припускаємо, що ShowAllDoctors() та GetAll() доступні у ConsoleUI
             ShowAllDoctors();
             Console.Write("Enter Doctor ID: ");
             if (!Guid.TryParse(Console.ReadLine(), out Guid doctorId)) return;
@@ -574,9 +547,9 @@ namespace Hospital_PL
 
             TimeSpan duration = new TimeSpan(0, 30, 0); // Assuming 30 minutes duration
 
-            // CALL BLL MANAGER (AppointmentManager)
+
             Appointment newApp = _appointmentManager.CreateAppointment(doctorId, patientId, startTime, duration);
-            Console.WriteLine($"\n✅ Success! Appointment created: {newApp.AppointmentId}. Time: {newApp.StartTime} for 30 min.");
+            Console.WriteLine($"\nSuccess! Appointment created: {newApp.Id}. Time: {newApp.StartTime}");
         }
 
         private void CancelAppointment()
@@ -584,9 +557,8 @@ namespace Hospital_PL
             Console.Write("Enter Appointment ID to cancel: ");
             if (!Guid.TryParse(Console.ReadLine(), out Guid appId)) return;
 
-            // CALL BLL MANAGER
             _appointmentManager.CancelAppointment(appId);
-            Console.WriteLine($"\n✅ Appointment {appId} successfully cancelled.");
+            Console.WriteLine($"\nAppointment {appId} successfully cancelled.");
         }
 
         private void ShowDoctorAppointments()
@@ -599,12 +571,12 @@ namespace Hospital_PL
             // CALL BLL MANAGER
             var appointments = _appointmentManager.GetAppointmentsByDoctor(doctorId);
 
-            Console.WriteLine($"\n--- APPOINTMENTS FOR DOCTOR {doctorId} ---");
+            Console.WriteLine($"\nAPPOINTMENTS FOR DOCTOR {doctorId}");
             if (appointments.Any())
             {
                 foreach (var a in appointments.OrderBy(a => a.StartTime))
                 {
-                    Console.WriteLine($"[ID: {a.AppointmentId}] Time: {a.StartTime} | Patient ID: {a.PatientId} | Status: {a.Status}");
+                    Console.WriteLine($"[ID: {a.Id}] Time: {a.StartTime} | Patient ID: {a.PatientId} | Status: {a.Status}");
                 }
             }
             else
@@ -630,7 +602,7 @@ namespace Hospital_PL
                     var doctor = _doctorRepo.GetById(a.DoctorId);
                     string doctorName = doctor != null ? $"{doctor.LastName}, {doctor.FirstName}" : "Unknown Doctor";
 
-                    Console.WriteLine($"[ID: {a.AppointmentId}] Time: {a.StartTime} | Doctor: {doctorName} | Status: {a.Status}");
+                    Console.WriteLine($"[ID: {a.Id}] Time: {a.StartTime} | Doctor: {doctorName} | Status: {a.Status}");
                 }
             }
             else
