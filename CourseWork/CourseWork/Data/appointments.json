@@ -4,6 +4,13 @@
     "DoctorId": "51255ad2-24d9-4b53-b024-3244dfb24cd7",
     "PatientId": "e83fcf0e-3e00-4c4a-bedc-0a7f0c1bfcf6",
     "StartTime": "2025-12-12T00:00:00",
-    "Status": 1
+    "Status": 0
+  },
+  {
+    "Id": "664f8910-dc4e-4a6b-a28f-7063d556d9f4",
+    "DoctorId": "51255ad2-24d9-4b53-b024-3244dfb24cd7",
+    "PatientId": "e80bad2f-3767-48fc-a18c-3f0f7a7eac88",
+    "StartTime": "2025-12-01T10:00:00",
+    "Status": 0
   }
 ]

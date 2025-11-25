@@ -12,5 +12,40 @@
     "IsFemale": true,
     "_firstName": "Emma",
     "_lastName": "Brown"
+  },
+  {
+    "DateOfBirth": "2004-09-20T00:00:00",
+    "MedicalCard": {
+      "Entries": [
+        {
+          "Id": "00000000-0000-0000-0000-000000000000",
+          "Date": "2025-11-21T10:10:34.5066155+02:00",
+          "Diagnosis": "Chronical Lazyness",
+          "Notes": "Very lazy"
+        }
+      ],
+      "Id": "e80bad2f-3767-48fc-a18c-3f0f7a7eac88"
+    },
+    "_dob": "2004-09-20T00:00:00",
+    "Id": "e80bad2f-3767-48fc-a18c-3f0f7a7eac88",
+    "FirstName": "Illia",
+    "LastName": "Kozlovets",
+    "IsFemale": false,
+    "_firstName": "Illia",
+    "_lastName": "Kozlovets"
+  },
+  {
+    "DateOfBirth": "2004-09-20T00:00:00",
+    "MedicalCard": {
+      "Entries": [],
+      "Id": "4d702afc-ed72-41b5-906c-079ad34af9a0"
+    },
+    "_dob": "2004-09-20T00:00:00",
+    "Id": "4d702afc-ed72-41b5-906c-079ad34af9a0",
+    "FirstName": "Ptient",
+    "LastName": "one",
+    "IsFemale": true,
+    "_firstName": "Ptient",
+    "_lastName": "one"
   }
 ]

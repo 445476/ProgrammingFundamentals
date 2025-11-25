@@ -7,8 +7,8 @@
         "Id": "07e54761-ad9f-4891-8a9f-06b740782359",
         "StartTime": "2025-12-01T10:00:00",
         "EndTime": "2025-12-01T10:30:00",
-        "IsBooked": false,
-        "AppointmentId": null
+        "IsBooked": true,
+        "AppointmentId": "664f8910-dc4e-4a6b-a28f-7063d556d9f4"
       },
       {
         "Id": "b9b7795c-67da-40f2-acf1-3b071d2001ee",

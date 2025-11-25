@@ -17,8 +17,6 @@ namespace Hospital_Tests.ManagersTests
         public void Setup()
         {
             _doctorRepo = new DoctorRepositoryMock();
-            // DoctorManager залежить від DoctorRepository та ScheduleRepository
-            // Нам потрібна заглушка для ScheduleRepo, навіть якщо ми її не використовуємо в цих тестах.
             _manager = new DoctorManager(_doctorRepo, new ScheduleRepositoryMock());
         }
 
