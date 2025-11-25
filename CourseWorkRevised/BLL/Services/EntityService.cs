@@ -22,9 +22,13 @@ namespace BLL.Services
         private int _lastId;
         public EntityService()
         {
+            _provider = new JsonDataProvider();
+        }
 
-            // loading from json
-            var data = _provider.Load();
+        public EntityService(JsonDataProvider provider)
+        {
+        _provider = provider ?? new JsonDataProvider();
+        var data = _provider.Load();
 
             _lastId = data.LastId;
 
